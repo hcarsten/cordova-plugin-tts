@@ -106,9 +106,14 @@
 
 - (void)isLanguageAvailable:(CDVInvokedUrlCommand*)command {
     int retValue = 0;
+
     NSString* txtLocale = [command.arguments objectAtIndex:0];
+    txtLocale = [txtLocale stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    NSArray *localeParts = [txtLocale componentsSeparatedByString:@"-"];
+    txtLocale = [NSString stringWithFormat:@"%@-%@", [[localeParts objectAtIndex:0] lowercaseString], [[localeParts objectAtIndex:0] uppercaseString]];
+
     NSArray* speechVoices = [AVSpeechSynthesisVoice speechVoices];
-    
+
     for (id voice in speechVoices) {
         if ([txtLocale compare:[voice language] options:NSCaseInsensitiveSearch]) {
             retValue = 1;
@@ -122,7 +127,12 @@
 
 - (void)setLanguage:(CDVInvokedUrlCommand*)command {
     CDVPluginResult* result = nil;
+    
     NSString* txtLocale = [command.arguments objectAtIndex:0];
+    txtLocale = [txtLocale stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    NSArray *localeParts = [txtLocale componentsSeparatedByString:@"-"];
+    txtLocale = [NSString stringWithFormat:@"%@-%@", [[localeParts objectAtIndex:0] lowercaseString], [[localeParts objectAtIndex:0] uppercaseString]];
+    
     id testVoice = [AVSpeechSynthesisVoice voiceWithLanguage:txtLocale];
     if (testVoice != nil) {
         locale = txtLocale;
